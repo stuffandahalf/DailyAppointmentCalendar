@@ -1,2 +1,2 @@
 # DailyAppointmentCalendar
-CPS 209 Assignment 2
+CPS 209 Assignment 1
