@@ -1,4 +1,3 @@
-//importing java libraries
 import java.awt.BorderLayout;
 import java.awt.event.*;//ActionListener;
 import java.text.SimpleDateFormat;
@@ -15,18 +14,15 @@ import javax.swing.JButton;
 import javax.swing.JTextField;
 
 
-public class AppointmentFrame extends JFrame
+public class OldAppointmentFrame extends JFrame
 {
-    //instance variables for window size
     private final int WINDOW_WIDTH = 400;
     private final int WINDOW_HEIGHT = 300;
     
-    //variables used for the appointments
     private Calendar date;
     private SimpleDateFormat sdf;
     private ArrayList<Appointment> appointments;
     
-    //gui instance variables
     private JLabel dateLabel;
     private JTextArea textArea;
     
@@ -37,11 +33,9 @@ public class AppointmentFrame extends JFrame
     private JPanel actionPanel;
     private JPanel subDatePanelA;
     private JPanel subDatePanelB;
-    private JPanel subDatePanelC;
     
     private JButton leftButton;
     private JButton rightButton;
-    private JButton showButton;
     
     private JTextField month;
     private JTextField day;
@@ -50,9 +44,6 @@ public class AppointmentFrame extends JFrame
     private JTextField minutes;
     private JButton createButton;
     
-    /**
-     * constructor for the frame
-     */
 	public AppointmentFrame()
     {
         date = new GregorianCalendar();
@@ -66,18 +57,12 @@ public class AppointmentFrame extends JFrame
         setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
     }
     
-    /**
-     * method to create JLabel for frame
-     */
     private void createLabel()
     {
         dateLabel = new JLabel(sdf.format(date.getTime()));
         add(dateLabel, BorderLayout.NORTH);
     }
     
-    /**
-     * method to create main text area
-     */
     private void createTextArea()
     {
         textArea = new JTextArea();
@@ -85,51 +70,38 @@ public class AppointmentFrame extends JFrame
         add(scrollPane, BorderLayout.CENTER);
     }
     
-    /**
-     * method to create control panel of the frame
-     */
     private void createControlPanel()
     {
         controlPanel = new JPanel(new BorderLayout());
         createDateSubpanel();
-        //createActionSubpanel();
+        createActionSubpanel();
         
         add(controlPanel, BorderLayout.SOUTH);
     }
     
-    /**
-     * create the subpanel to adjust the date
-     */
     private void createDateSubpanel()
     {
         datePanel = new JPanel(new BorderLayout());
-        
-        subDatePanelA = new JPanel();
+        subDatePanelA = new JPanel();//new BorderLayout());
         datePanel.add(subDatePanelA, BorderLayout.NORTH);
+        subDatePanelB = new JPanel(new BorderLayout());
+        datePanel.add(subDatePanelB, BorderLayout.CENTER);
+        
         createLeftButton();
         createRightButton();
         
-        subDatePanelB = new JPanel(new BorderLayout());
-        day = new JTextField(2);
+        day = new JTextField();
         subDatePanelB.add(day, BorderLayout.WEST);
         
-        month = new JTextField(2);
+        month = new JTextField();
         subDatePanelB.add(month, BorderLayout.CENTER);
         
-        year = new JTextField(2);
+        year = new JTextField();
         subDatePanelB.add(month, BorderLayout.EAST);
-        datePanel.add(subDatePanelB, BorderLayout.CENTER);
-        
-        subDatePanelC = new JPanel(new BorderLayout());
-        createShowButton();
-        datePanel.add(subDatePanelA, BorderLayout.SOUTH);
         
         controlPanel.add(datePanel, BorderLayout.NORTH);
     }
     
-    /**
-     * create the left button
-     */
     private void createLeftButton()
     {
         class Listener implements ActionListener
@@ -145,12 +117,9 @@ public class AppointmentFrame extends JFrame
         leftButton = new JButton("<");
         leftButton.addActionListener(new Listener());
         
-        subDatePanelA.add(leftButton);
+        subDatePanelA.add(leftButton);//, BorderLayout.WEST);
     }
     
-    /**
-     * create the right button
-     */
     private void createRightButton()
     {
         class Listener implements ActionListener
@@ -166,26 +135,9 @@ public class AppointmentFrame extends JFrame
         rightButton = new JButton(">");
         rightButton.addActionListener(new Listener());
         
-        subDatePanelA.add(rightButton);
+        subDatePanelA.add(rightButton);//, BorderLayout.EAST);
     }
-    
-    private void createShowButton()
-    {
-        showButton = new JButton("Show");
-        class Listener implements ActionListener
-        {
-            public void actionPerformed(ActionEvent evt)
-            {
-                System.out.println("Show button was pressed");
-            }
-        }
-        showButton.addActionListener(new Listener());
-        subDatePanelC.add(showButton, BorderLayout.CENTER);
-    }
-    
-    /**
-     * create the subpanel for the actions
-     */
+
     private void createActionSubpanel()
     {
         actionPanel = new JPanel(new BorderLayout());
@@ -198,9 +150,6 @@ public class AppointmentFrame extends JFrame
         controlPanel.add(actionPanel, BorderLayout.SOUTH);
     }
     
-    /**
-     * create the create button
-     */
     private void createCreateButton()
     {
         createButton = new JButton();
@@ -208,7 +157,7 @@ public class AppointmentFrame extends JFrame
         {
             public void actionPerformed(ActionEvent evt)
             {
-                System.out.println("Show button was pressed");
+                
             }
         }
         createButton.addActionListener(new Listener());
