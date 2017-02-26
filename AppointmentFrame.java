@@ -5,6 +5,7 @@
 
 //importing java libraries
 import java.awt.BorderLayout;
+import java.awt.GridLayout;
 import java.awt.event.*;
 import java.awt.Dimension;
 import java.text.SimpleDateFormat;
@@ -20,6 +21,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JPanel;
 import javax.swing.JButton;
 import javax.swing.JTextField;
+import javax.swing.border.TitledBorder;
 
 
 public class AppointmentFrame extends JFrame
@@ -41,6 +43,7 @@ public class AppointmentFrame extends JFrame
     
     private JPanel controlPanel;
     
+    private TitledBorder dateBorder;
     private JPanel datePanel;
     
     private JPanel subDatePanelA;
@@ -58,7 +61,9 @@ public class AppointmentFrame extends JFrame
     private JPanel subDatePanelC;
     private JButton showButton;
     
+    private TitledBorder actionBorder;
     private JPanel actionPanel;
+    
     private JPanel subActionPanelA;
     private JLabel hourLabel;
     private JLabel minuteLabel;
@@ -69,8 +74,8 @@ public class AppointmentFrame extends JFrame
     private JButton createButton;
     private JButton cancelButton;
     
-    private JPanel subActionPanelC;
-    private JLabel descriptionLabel;
+    private JPanel descriptionPanel;
+    private TitledBorder descriptionBorder;
     private JTextArea description;
     
     
@@ -102,6 +107,7 @@ public class AppointmentFrame extends JFrame
         add(dateLabel, BorderLayout.NORTH);
     }
     
+    
     /**
      * method to create main text area
      */
@@ -113,6 +119,7 @@ public class AppointmentFrame extends JFrame
         add(scrollPane, BorderLayout.CENTER);
     }
     
+    
     /**
      * method to create control panel of the frame
      */
@@ -121,18 +128,23 @@ public class AppointmentFrame extends JFrame
         controlPanel = new JPanel(new BorderLayout());
         createDateSubpanel();
         createActionSubpanel();
+        createDescriptionSubpanel();
         
         add(controlPanel, BorderLayout.SOUTH);
     }
+    
     
     /**
      * create the subpanel to adjust the date
      */
     private void createDateSubpanel()
     {
+        dateBorder = new TitledBorder("Date");
+        dateBorder.setTitleJustification(TitledBorder.LEFT);
         datePanel = new JPanel(new BorderLayout());
+        datePanel.setBorder(dateBorder);
         
-        subDatePanelA = new JPanel();
+        subDatePanelA = new JPanel(new GridLayout(1, 2));
         datePanel.add(subDatePanelA, BorderLayout.NORTH);
         createLeftButton();
         createRightButton();
@@ -172,7 +184,6 @@ public class AppointmentFrame extends JFrame
             public void actionPerformed(ActionEvent evt)
             {
                 date.add(Calendar.DAY_OF_MONTH, -1);
-                //System.out.println(sdf.format(date.getTime()));
                 dateLabel.setText(sdf.format(date.getTime()));
                 getTodaysAppointments();
             }
@@ -194,7 +205,6 @@ public class AppointmentFrame extends JFrame
             public void actionPerformed(ActionEvent evt)
             {
                 date.add(Calendar.DAY_OF_MONTH, 1);
-                //System.out.println(sdf.format(date.getTime()));
                 dateLabel.setText(sdf.format(date.getTime()));
                 getTodaysAppointments();
             }
@@ -275,7 +285,10 @@ public class AppointmentFrame extends JFrame
      */
     private void createActionSubpanel()
     {
+        actionBorder = new TitledBorder("Action");
+        actionBorder.setTitleJustification(TitledBorder.LEFT);
         actionPanel = new JPanel(new BorderLayout());
+        actionPanel.setBorder(actionBorder);
         
         subActionPanelA = new JPanel();
         hourLabel = new JLabel("Hour");
@@ -293,13 +306,6 @@ public class AppointmentFrame extends JFrame
         createCancelButton();
         actionPanel.add(subActionPanelB, BorderLayout.CENTER);
         
-        subActionPanelC = new JPanel();
-        descriptionLabel = new JLabel("Description");
-        subActionPanelC.add(descriptionLabel);
-        description = new JTextArea(1, 10);
-        subActionPanelC.add(description);
-        actionPanel.add(subActionPanelC, BorderLayout.SOUTH);
-        
         controlPanel.add(actionPanel, BorderLayout.CENTER);
     }
     
@@ -315,11 +321,8 @@ public class AppointmentFrame extends JFrame
             {
                 boolean create = true;
                 int year = date.get(Calendar.YEAR);
-                //String year = yearInput.getText();
                 int month = date.get(Calendar.MONTH);
-                //String month = monthInput.getText();
                 int day = date.get(Calendar.DAY_OF_MONTH);
-                //String day = dayInput.getText();
                 
                 String hour = hourInput.getText();
                 String minute = minuteInput.getText();
@@ -343,6 +346,7 @@ public class AppointmentFrame extends JFrame
                             break;
                         }
                     }
+                    
                     if(create)
                     {
                         Appointment newAppointment = new Appointment(year, month, day, Integer.parseInt(hour), Integer.parseInt(minute), description.getText());
@@ -350,10 +354,8 @@ public class AppointmentFrame extends JFrame
                         System.out.println(newAppointment.print());
                         appointments.add(newAppointment);
                     }
-                    
+                    getTodaysAppointments();
                 }
-                Collections.sort(appointments);
-                getTodaysAppointments();
             }
         }
         createButton.addActionListener(new Listener());
@@ -370,10 +372,50 @@ public class AppointmentFrame extends JFrame
         {
             public void actionPerformed(ActionEvent evt)
             {
-                System.out.println("Cancel button was pressed");
+                int year = date.get(Calendar.YEAR);
+                int month = date.get(Calendar.MONTH);
+                int day = date.get(Calendar.DAY_OF_MONTH);
+                String hour = hourInput.getText();
+                String minute = minuteInput.getText();
+                if(hour.equals(""))
+                {
+                    description.setText("ERROR");
+                }
+                else
+                {
+                    if(minute.equals(""))
+                    {
+                        minute = "0";
+                    }
+                    for(int i = 0; i < appointments.size(); i++)
+                    {
+                        if(appointments.get(i).occursOn(year, month, day, Integer.parseInt(hour), Integer.parseInt(minute)))
+                        {
+                            appointments.remove(i);
+                            break;
+                        }
+                    }
+                    getTodaysAppointments();
+                }
             }
         }
         cancelButton.addActionListener(new Listener());
         subActionPanelB.add(cancelButton);
+    }
+    
+    
+    /**
+     * creates the description subpanel
+     */
+    private void createDescriptionSubpanel()
+    {
+        descriptionBorder = new TitledBorder("Description");
+        descriptionBorder.setTitleJustification(TitledBorder.LEFT);
+        descriptionPanel = new JPanel(new BorderLayout());
+        descriptionPanel.setBorder(descriptionBorder);
+        
+        description = new JTextArea(4, 10);
+        descriptionPanel.add(description, BorderLayout.CENTER);
+        controlPanel.add(descriptionPanel, BorderLayout.SOUTH);
     }
 }
