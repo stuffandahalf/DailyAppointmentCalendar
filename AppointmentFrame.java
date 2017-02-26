@@ -1,10 +1,17 @@
+//Name: Gregory Norton
+//Student ID: 500766165
+//Class: CPS 209
+
+
 //importing java libraries
 import java.awt.BorderLayout;
-import java.awt.event.*;//ActionListener;
+import java.awt.event.*;
+import java.awt.Dimension;
 import java.text.SimpleDateFormat;
 import java.util.GregorianCalendar;
 import java.util.Calendar;
 import java.util.ArrayList;
+import java.util.Collections;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -18,8 +25,8 @@ import javax.swing.JTextField;
 public class AppointmentFrame extends JFrame
 {
     //instance variables for window size
-    private final int WINDOW_WIDTH = 400;
-    private final int WINDOW_HEIGHT = 300;
+    private final int WINDOW_WIDTH = 300;
+    private final int WINDOW_HEIGHT = 600;
     
     //variables used for the appointments
     private Calendar date;
@@ -33,30 +40,49 @@ public class AppointmentFrame extends JFrame
     private JScrollPane scrollPane;
     
     private JPanel controlPanel;
-    private JPanel datePanel;
-    private JPanel actionPanel;
-    private JPanel subDatePanelA;
-    private JPanel subDatePanelB;
-    private JPanel subDatePanelC;
     
+    private JPanel datePanel;
+    
+    private JPanel subDatePanelA;
     private JButton leftButton;
     private JButton rightButton;
+    
+    private JPanel subDatePanelB;
+    private JLabel monthLabel;
+    private JTextField monthInput;
+    private JLabel dayLabel;
+    private JTextField dayInput;
+    private JLabel yearLabel;
+    private JTextField yearInput;
+    
+    private JPanel subDatePanelC;
     private JButton showButton;
     
-    private JTextField month;
-    private JTextField day;
-    private JTextField year;
-    private JTextField hours;
-    private JTextField minutes;
+    private JPanel actionPanel;
+    private JPanel subActionPanelA;
+    private JLabel hourLabel;
+    private JLabel minuteLabel;
+    private JTextField hourInput;
+    private JTextField minuteInput;
+    
+    private JPanel subActionPanelB;
     private JButton createButton;
+    private JButton cancelButton;
+    
+    private JPanel subActionPanelC;
+    private JLabel descriptionLabel;
+    private JTextArea description;
+    
+    
     
     /**
      * constructor for the frame
      */
 	public AppointmentFrame()
     {
+        super();
         date = new GregorianCalendar();
-        sdf = new SimpleDateFormat();
+        sdf = new SimpleDateFormat("EEE, MMM dd, yyyy");
         appointments = new ArrayList<Appointment>();
         
         createLabel();
@@ -64,6 +90,7 @@ public class AppointmentFrame extends JFrame
         createControlPanel();
         
         setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
+        setMinimumSize(new Dimension(WINDOW_WIDTH, WINDOW_HEIGHT));
     }
     
     /**
@@ -81,6 +108,7 @@ public class AppointmentFrame extends JFrame
     private void createTextArea()
     {
         textArea = new JTextArea();
+        textArea.setEditable(false);
         scrollPane = new JScrollPane(textArea);
         add(scrollPane, BorderLayout.CENTER);
     }
@@ -92,7 +120,7 @@ public class AppointmentFrame extends JFrame
     {
         controlPanel = new JPanel(new BorderLayout());
         createDateSubpanel();
-        //createActionSubpanel();
+        createActionSubpanel();
         
         add(controlPanel, BorderLayout.SOUTH);
     }
@@ -109,20 +137,27 @@ public class AppointmentFrame extends JFrame
         createLeftButton();
         createRightButton();
         
-        subDatePanelB = new JPanel(new BorderLayout());
-        day = new JTextField(2);
-        subDatePanelB.add(day, BorderLayout.WEST);
+        subDatePanelB = new JPanel();//new BorderLayout());
         
-        month = new JTextField(2);
-        subDatePanelB.add(month, BorderLayout.CENTER);
+        dayLabel = new JLabel("Day");
+        subDatePanelB.add(dayLabel);
+        dayInput = new JTextField(Integer.toString(date.get(Calendar.DAY_OF_MONTH)), 2);
+        subDatePanelB.add(dayInput);//, BorderLayout.WEST);
         
-        year = new JTextField(2);
-        subDatePanelB.add(month, BorderLayout.EAST);
+        monthLabel = new JLabel("Month");
+        subDatePanelB.add(monthLabel);
+        monthInput = new JTextField(Integer.toString(date.get(Calendar.MONTH)+1), 2);
+        subDatePanelB.add(monthInput);//, BorderLayout.CENTER);
+        
+        yearLabel = new JLabel("Year");
+        subDatePanelB.add(yearLabel);
+        yearInput = new JTextField(Integer.toString(date.get(Calendar.YEAR)), 4);
+        subDatePanelB.add(yearInput);//, BorderLayout.EAST);
         datePanel.add(subDatePanelB, BorderLayout.CENTER);
         
-        subDatePanelC = new JPanel(new BorderLayout());
+        subDatePanelC = new JPanel();//new BorderLayout());
         createShowButton();
-        datePanel.add(subDatePanelA, BorderLayout.SOUTH);
+        datePanel.add(subDatePanelC, BorderLayout.SOUTH);
         
         controlPanel.add(datePanel, BorderLayout.NORTH);
     }
@@ -137,8 +172,9 @@ public class AppointmentFrame extends JFrame
             public void actionPerformed(ActionEvent evt)
             {
                 date.add(Calendar.DAY_OF_MONTH, -1);
-                System.out.println(sdf.format(date.getTime()));
+                //System.out.println(sdf.format(date.getTime()));
                 dateLabel.setText(sdf.format(date.getTime()));
+                getTodaysAppointments();
             }
         }
         
@@ -158,8 +194,9 @@ public class AppointmentFrame extends JFrame
             public void actionPerformed(ActionEvent evt)
             {
                 date.add(Calendar.DAY_OF_MONTH, 1);
-                System.out.println(sdf.format(date.getTime()));
+                //System.out.println(sdf.format(date.getTime()));
                 dateLabel.setText(sdf.format(date.getTime()));
+                getTodaysAppointments();
             }
         }
         
@@ -169,6 +206,9 @@ public class AppointmentFrame extends JFrame
         subDatePanelA.add(rightButton);
     }
     
+    /**
+     * create the show button
+     */
     private void createShowButton()
     {
         showButton = new JButton("Show");
@@ -176,7 +216,30 @@ public class AppointmentFrame extends JFrame
         {
             public void actionPerformed(ActionEvent evt)
             {
-                System.out.println("Show button was pressed");
+                //System.out.println("Show button was pressed");
+                
+                String year = yearInput.getText();
+                if(!year.equals(""))
+                {
+                    date.set(Calendar.YEAR, Integer.parseInt(yearInput.getText()));
+                }
+                String month = monthInput.getText();
+                if(!month.equals(""))
+                {
+                    date.set(Calendar.MONTH, Integer.parseInt(monthInput.getText())-1);
+                }
+                String day = dayInput.getText();
+                if(!day.equals(""))
+                {
+                    date.set(Calendar.DAY_OF_MONTH, Integer.parseInt(dayInput.getText()));
+                }
+                //System.out.println(dayInput.getText());
+                //System.out.println(sdf.format(date.getTime()));
+                yearInput.setText(Integer.toString(date.get(Calendar.YEAR)));
+                monthInput.setText(Integer.toString(date.get(Calendar.MONTH)+1));
+                dayInput.setText(Integer.toString(date.get(Calendar.DAY_OF_MONTH)));
+                dateLabel.setText(sdf.format(date.getTime()));
+                getTodaysAppointments();
             }
         }
         showButton.addActionListener(new Listener());
@@ -184,18 +247,60 @@ public class AppointmentFrame extends JFrame
     }
     
     /**
+     * method to get and print the
+     * appointments for the day to
+     * the JTextArea
+     */
+    private void getTodaysAppointments()
+    {
+        textArea.setText("");
+        Collections.sort(appointments);
+        for(int i = 0; i < appointments.size(); i++)
+        {
+            Calendar apptDate = appointments.get(i).getDate();
+            if(apptDate.get(Calendar.YEAR) == date.get(Calendar.YEAR) && 
+               apptDate.get(Calendar.MONTH) == date.get(Calendar.MONTH) &&
+               apptDate.get(Calendar.DAY_OF_MONTH) == date.get(Calendar.DAY_OF_MONTH))
+            {
+                textArea.append(appointments.get(i).print());
+                textArea.append("\n\n");
+            }
+        }
+    }
+ 
+    
+    
+    /**
      * create the subpanel for the actions
      */
     private void createActionSubpanel()
     {
         actionPanel = new JPanel(new BorderLayout());
-        hours = new JTextField();
-        minutes = new JTextField();
-        createCreateButton();
         
-        actionPanel.add(hours, BorderLayout.WEST);
-        actionPanel.add(minutes, BorderLayout.EAST);
-        controlPanel.add(actionPanel, BorderLayout.SOUTH);
+        subActionPanelA = new JPanel();
+        hourLabel = new JLabel("Hour");
+        subActionPanelA.add(hourLabel);
+        hourInput = new JTextField(2);
+        subActionPanelA.add(hourInput);
+        minuteLabel = new JLabel("Minute");
+        subActionPanelA.add(minuteLabel);
+        minuteInput = new JTextField(2);
+        subActionPanelA.add(minuteInput);
+        actionPanel.add(subActionPanelA, BorderLayout.NORTH);
+        
+        subActionPanelB = new JPanel();
+        createCreateButton();
+        createCancelButton();
+        actionPanel.add(subActionPanelB, BorderLayout.CENTER);
+        
+        subActionPanelC = new JPanel();
+        descriptionLabel = new JLabel("Description");
+        subActionPanelC.add(descriptionLabel);
+        description = new JTextArea(1, 10);
+        subActionPanelC.add(description);
+        actionPanel.add(subActionPanelC, BorderLayout.SOUTH);
+        
+        controlPanel.add(actionPanel, BorderLayout.CENTER);
     }
     
     /**
@@ -203,17 +308,72 @@ public class AppointmentFrame extends JFrame
      */
     private void createCreateButton()
     {
-        createButton = new JButton();
+        createButton = new JButton("Create");
         class Listener implements ActionListener
         {
             public void actionPerformed(ActionEvent evt)
             {
-                System.out.println("Show button was pressed");
+                boolean create = true;
+                int year = date.get(Calendar.YEAR);
+                //String year = yearInput.getText();
+                int month = date.get(Calendar.MONTH);
+                //String month = monthInput.getText();
+                int day = date.get(Calendar.DAY_OF_MONTH);
+                //String day = dayInput.getText();
+                
+                String hour = hourInput.getText();
+                String minute = minuteInput.getText();
+                if(hour.equals(""))
+                {
+                    description.setText("ERROR");
+                }
+                else
+                {
+                    if(minute.equals(""))
+                    {
+                        minute = "0";
+                    }
+                    
+                    for(int i = 0; i < appointments.size(); i++)
+                    {
+                        if(appointments.get(i).occursOn(year, month, day, Integer.parseInt(hour), Integer.parseInt(minute)))
+                        {
+                            create = false;
+                            description.setText("CONFLICT");
+                            break;
+                        }
+                    }
+                    if(create)
+                    {
+                        Appointment newAppointment = new Appointment(year, month, day, Integer.parseInt(hour), Integer.parseInt(minute), description.getText());
+                        description.setText("");
+                        System.out.println(newAppointment.print());
+                        appointments.add(newAppointment);
+                    }
+                    
+                }
+                Collections.sort(appointments);
+                getTodaysAppointments();
             }
         }
         createButton.addActionListener(new Listener());
-        actionPanel.add(createButton);
+        subActionPanelB.add(createButton);
     }
 
+    /**
+     * create the cancel button
+     */
+    private void createCancelButton()
+    {
+        cancelButton = new JButton("Cancel");
+        class Listener implements ActionListener
+        {
+            public void actionPerformed(ActionEvent evt)
+            {
+                System.out.println("Cancel button was pressed");
+            }
+        }
+        cancelButton.addActionListener(new Listener());
+        subActionPanelB.add(cancelButton);
+    }
 }
-

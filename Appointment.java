@@ -1,3 +1,8 @@
+//Name: Gregory Norton
+//Student ID: 500766165
+//Class: CPS 209
+
+
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
@@ -34,7 +39,7 @@ public class Appointment implements Comparable
     
     public String print()
     {
-        String hour = Integer.toString(date.get(Calendar.HOUR));
+        String hour = Integer.toString(date.get(Calendar.HOUR_OF_DAY));
         String minute = Integer.toString(date.get(Calendar.MINUTE));
         return hour + ':' + minute + ' ' + description;
     }
@@ -42,11 +47,7 @@ public class Appointment implements Comparable
     public boolean occursOn(int year, int month, int day, int hour, int minute)
     {
         Calendar otherDate = new GregorianCalendar(year, month, day, hour, minute);
-        if(date.compareTo(otherDate) == 0)
-        {
-            return true;
-        }
-        return false;
+        return date.compareTo(otherDate) == 0;
     }
     
     public int compareTo(Object other)
