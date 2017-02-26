@@ -13,7 +13,7 @@ public class AppointmentTester
         System.out.println(test.compareTo(test));
         Appointment test4 = new Appointment(2012, -1, 45, 26, 67, "Test of fails");
         System.out.println(test4.print());
-        Appointment test5 = new Appointment(2017, 2, 26, 12, 15, "test of 24 hourness");
+        Appointment test5 = new Appointment(2017, 2, 26, 0, 0, "test of 24 hourness");
         System.out.println(test5.print());
 	}
 }
