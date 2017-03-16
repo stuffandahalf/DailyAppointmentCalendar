@@ -348,7 +348,6 @@ public class AppointmentFrame extends JFrame
                         if(appointments.get(i).occursOn(year, month, day, Integer.parseInt(hour), Integer.parseInt(minute)))    //check if the appointment occurs at the given time
                         {
                             create = false;                                             //set the create variable to false
-                            System.out.println(create);
                             description.setText("CONFLICT");                            //set the text of the description box to say CONFLICT
                             break;                                                      //break the loop
                         }
@@ -425,39 +424,51 @@ public class AppointmentFrame extends JFrame
         controlPanel.add(descriptionPanel, BorderLayout.SOUTH);                         //add the descriptionPanel to the south of the controlPanel
     }
     
+    /**
+     * creates the menubar
+     */
     private void createMenuBar()
     {
-        menuBar = new JMenuBar();
-        manageMenu = new JMenu("Manage");
-        menuBar.add(manageMenu);
+        menuBar = new JMenuBar();                                       //initialize the menuBar
+        manageMenu = new JMenu("Manage");                               //make a new menu with label Manage
+        menuBar.add(manageMenu);                                        //add the Manage menu to the menubar
         
-        createClearAppointments();
-        createAddSamples();
+        createClearAppointments();                                      //create the clear appointments item
+        createAddSamples();                                             //create the add samples item
         
-        setJMenuBar(menuBar);
+        setJMenuBar(menuBar);                                           //set the menu bar of the frame
     }
     
+    /**
+     * create the clear appointments menu option
+     */
     private void createClearAppointments()
     {
-        clearAppointments = new JMenuItem("Clear Appointments");
-        class ClearAppointmentsListener implements ActionListener
+        clearAppointments = new JMenuItem("Clear Appointments");                //initialize clearAppointments as a new MenuItem
+        class ClearAppointmentsListener implements ActionListener               //subclass that implements the ActionListener interface
         {
-            public void actionPerformed(ActionEvent e)
+            public void actionPerformed(ActionEvent e)                          //override the actionPerformed method
             {
-                System.out.println(e);
-                
+                while(appointments.size() != 0)                                 //while there are still values in the appointment array
+                {
+                    appointments.remove(0);                                     //remove the first element
+                }
+                getTodaysAppointments();                                        //refresh the textArea
             }
         }
-        clearAppointments.addActionListener(new ClearAppointmentsListener());
-        manageMenu.add(clearAppointments);
+        clearAppointments.addActionListener(new ClearAppointmentsListener());   //add the ActionListener to the clearAppointments menuItem
+        manageMenu.add(clearAppointments);                                      //add the menuItem to the manageMenu
     }
     
+    /**
+     * create the add samples menu option
+     */
     private void createAddSamples()
     {
-        addSampleAppointments = new JMenuItem("Add Sample Appointments");
-        class AddSampleListener implements ActionListener
+        addSampleAppointments = new JMenuItem("Add Sample Appointments");                   //initialize the addSampleAppointments item
+        class AddSampleListener implements ActionListener                                   //new subclass that implements the ActionListener interface
         {
-            private Appointment[] samples = {
+            private Appointment[] samples = {                                               //array of sample Appointment objects
                 new Appointment(2017, 12, 12, 12, 12, "It will be 12:12 on 12/12"),
                 new Appointment(2011, 11, 11, 11, 11, "It was 11:11 on 11/11/11"),
                 new Appointment(1983, 4, 13, 3, 23, "This was a random date"),
@@ -468,36 +479,35 @@ public class AppointmentFrame extends JFrame
             
             public void actionPerformed(ActionEvent e)
             {
-                for(int j = 0; j < samples.length; j++)
+                for(int j = 0; j < samples.length; j++)                                     //for every sample appointment
                 {
                     boolean create = true;                                                  //boolean to store wheather the appointment should be made or not
-                    int year = samples[j].getDate().get(Calendar.YEAR);                                     //easy access to the year,
-                    int month = samples[j].getDate().get(Calendar.MONTH);                                   //month,
-                    int day = samples[j].getDate().get(Calendar.DAY_OF_MONTH);                              //and day
-                    
-                    int hour = samples[j].getDate().get(Calendar.HOUR);                                      //get the hour from the hourInput JTextField
-                    int minute = samples[j].getDate().get(Calendar.MINUTE);                                  //get the minute from the minuteInput JTextField
+                    int year = samples[j].getDate().get(Calendar.YEAR);                     //easy access to the year,
+                    int month = samples[j].getDate().get(Calendar.MONTH);                   //month,
+                    int day = samples[j].getDate().get(Calendar.DAY_OF_MONTH);              //day,
+                    int hour = samples[j].getDate().get(Calendar.HOUR);                     //hour,
+                    int minute = samples[j].getDate().get(Calendar.MINUTE);                 //and minute
 
-                    for(int i = 0; i < appointments.size(); i++)                        //for every index in appointments
+                    for(int i = 0; i < appointments.size(); i++)                            //for every index in appointments
                     {
                         if(appointments.get(i).occursOn(year, month, day, hour, minute))    //check if the appointment occurs at the given time
                         {
-                            create = false;                                             //set the create variable to false
-                            description.setText("CONFLICT");                            //set the text of the description box to say CONFLICT
-                            break;                                                      //break the loop
+                            create = false;                                                 //set the create variable to false
+                            description.setText("CONFLICT");                                //set the text of the description box to say CONFLICT
+                            break;                                                          //break the loop
                         }
                     }
                     
-                    if(create)                                                          //if create was not set to false
+                    if(create)                                                              //if create was not set to false
                     {
-                        appointments.add(samples[j]);                               //add the new appointment to the ArrayList
+                        appointments.add(samples[j]);                                       //add the new appointment to the ArrayList
                     }
                 }
-                getTodaysAppointments();                                            //run the getTodaysAppointments method to print them to the screen
+                getTodaysAppointments();                                                    //run the getTodaysAppointments method to print them to the screen
 
             }
         }
-        addSampleAppointments.addActionListener(new AddSampleListener());
-        manageMenu.add(addSampleAppointments);
+        addSampleAppointments.addActionListener(new AddSampleListener());                   //add the ActionListener to the menu item
+        manageMenu.add(addSampleAppointments);                                              //add the menu item to the manage menu
     }
 }
