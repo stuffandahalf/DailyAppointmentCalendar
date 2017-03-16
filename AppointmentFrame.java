@@ -468,8 +468,6 @@ public class AppointmentFrame extends JFrame
             
             public void actionPerformed(ActionEvent e)
             {
-                //System.out.println(e);
-                //System.out.println(Arrays.toString(samples));
                 for(int j = 0; j < samples.length; j++)
                 {
                     boolean create = true;                                                  //boolean to store wheather the appointment should be made or not
@@ -492,12 +490,8 @@ public class AppointmentFrame extends JFrame
                     
                     if(create)                                                          //if create was not set to false
                     {
-                        //Appointment newAppointment = new Appointment(year, month, day, hour, minute, samples[j].getDescription());    //make a new appointment at the given time
-                        //description.setText("");                                        //clear the description text box
                         appointments.add(samples[j]);                               //add the new appointment to the ArrayList
                     }
-                    //System.out.println(appointments);
-                    //System.out.println(appointments.get(0).getDescription());
                 }
                 getTodaysAppointments();                                            //run the getTodaysAppointments method to print them to the screen
 
