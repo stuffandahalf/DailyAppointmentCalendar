@@ -13,7 +13,7 @@ public class Appointment implements Comparable<Appointment>                     
     
     public Appointment(int year, int month, int day, int hour, int minute, String description)  //constructor needs 5 integers and one string
     {
-        date = new GregorianCalendar(year, month, day, hour, minute);                           //initialize the date variable to point to a new GregorianCalendar object with the date provided
+        date = new GregorianCalendar(year, month-1, day, hour, minute);                           //initialize the date variable to point to a new GregorianCalendar object with the date provided
         this.description = description;                                                         //set the description to point to the same String as the one provided
     }
     

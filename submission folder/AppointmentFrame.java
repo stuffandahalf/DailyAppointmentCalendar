@@ -13,6 +13,7 @@ import java.util.GregorianCalendar;
 import java.util.Calendar;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Arrays;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -22,6 +23,10 @@ import javax.swing.JPanel;
 import javax.swing.JButton;
 import javax.swing.JTextField;
 import javax.swing.border.TitledBorder;
+import javax.swing.JMenuBar;
+import javax.swing.JMenu;
+import javax.swing.JMenuItem;
+
 
 
 public class AppointmentFrame extends JFrame
@@ -78,7 +83,10 @@ public class AppointmentFrame extends JFrame
     private TitledBorder descriptionBorder;
     private JTextArea description;
     
-    
+    private JMenuBar menuBar;
+    private JMenu manageMenu;
+    private JMenuItem clearAppointments;
+    private JMenuItem addSampleAppointments;
     
     /**
      * constructor for the frame
@@ -93,6 +101,7 @@ public class AppointmentFrame extends JFrame
         createLabel();                                                                  //run createLabel method
         createTextArea();                                                               //run createTextArea method
         createControlPanel();                                                           //run createControlPanel method
+        createMenuBar();                                                                //run createMenuBar method
         
         setSize(WINDOW_WIDTH, WINDOW_HEIGHT);                                           //sets the size of the JFrame to the constants WINDOW_WIDTH and WINDOW_HEIGHT
         setMinimumSize(new Dimension(WINDOW_WIDTH, WINDOW_HEIGHT));                     //sets the minimum size of the JFrame to the same constants
@@ -179,7 +188,7 @@ public class AppointmentFrame extends JFrame
      */
     private void createLeftButton()
     {
-        class Listener implements ActionListener                                        //create a subclass to implement the ActionListener interface
+        class LeftButtonListener implements ActionListener                                        //create a subclass to implement the ActionListener interface
         {
             public void actionPerformed(ActionEvent evt)                                //override the actionPerformed method
             {
@@ -190,7 +199,7 @@ public class AppointmentFrame extends JFrame
         }
         
         leftButton = new JButton("<");                                                  //initialize the leftButton to point to a new JButton object with label <
-        leftButton.addActionListener(new Listener());                                   //add the new listener class to the button
+        leftButton.addActionListener(new LeftButtonListener());                                   //add the new listener class to the button
         
         subDatePanelA.add(leftButton);                                                  //add the leftButton to the first date subpanel
     }
@@ -200,7 +209,7 @@ public class AppointmentFrame extends JFrame
      */
     private void createRightButton()
     {
-        class Listener implements ActionListener
+        class RightButtonListener implements ActionListener
         {
             public void actionPerformed(ActionEvent evt)                                //create a subclass to implement the ActionListener interface
             {
@@ -211,7 +220,7 @@ public class AppointmentFrame extends JFrame
         }
         
         rightButton = new JButton(">");                                                 //initialize the rightButton to point to a new JButton object with label >
-        rightButton.addActionListener(new Listener());                                  //add the new listener class to the button
+        rightButton.addActionListener(new RightButtonListener());                                  //add the new listener class to the button
         
         subDatePanelA.add(rightButton);                                                 //add the rightButton to the first date subpanel
     }
@@ -222,7 +231,7 @@ public class AppointmentFrame extends JFrame
     private void createShowButton()
     {
         showButton = new JButton("Show");                                               //set the showButton to point to a new JButton with label Show
-        class Listener implements ActionListener                                        //subclass that implements the ActionListener interface
+        class ShowButtonListener implements ActionListener                                        //subclass that implements the ActionListener interface
         {
             public void actionPerformed(ActionEvent evt)                                //override the actionPerformed method
             {                
@@ -248,7 +257,7 @@ public class AppointmentFrame extends JFrame
                 getTodaysAppointments();                                                //run getTodaysAppointments to show the appointments for that date
             }
         }
-        showButton.addActionListener(new Listener());                                   //add the actionListener to the showButton
+        showButton.addActionListener(new ShowButtonListener());                                   //add the actionListener to the showButton
         subDatePanelC.add(showButton, BorderLayout.CENTER);                             //add the showButton the the third date subpanel
     }
     
@@ -264,6 +273,7 @@ public class AppointmentFrame extends JFrame
         for(int i = 0; i < appointments.size(); i++)                                    //for every index in the ArrayList
         {
             Calendar apptDate = appointments.get(i).getDate();                          //get the date of the appointment
+               
             if(apptDate.get(Calendar.YEAR) == date.get(Calendar.YEAR) &&                //if the current date is equal to the date of the appointment
                apptDate.get(Calendar.MONTH) == date.get(Calendar.MONTH) &&
                apptDate.get(Calendar.DAY_OF_MONTH) == date.get(Calendar.DAY_OF_MONTH))
@@ -311,7 +321,7 @@ public class AppointmentFrame extends JFrame
     private void createCreateButton()
     {
         createButton = new JButton("Create");                                           //create a new JButton with label Create
-        class Listener implements ActionListener                                        //make a subclass that implements the ActionListener interface
+        class CreateButtonListener implements ActionListener                                        //make a subclass that implements the ActionListener interface
         {
             public void actionPerformed(ActionEvent evt)                                //override the actionPerformed method
             {
@@ -338,6 +348,7 @@ public class AppointmentFrame extends JFrame
                         if(appointments.get(i).occursOn(year, month, day, Integer.parseInt(hour), Integer.parseInt(minute)))    //check if the appointment occurs at the given time
                         {
                             create = false;                                             //set the create variable to false
+                            System.out.println(create);
                             description.setText("CONFLICT");                            //set the text of the description box to say CONFLICT
                             break;                                                      //break the loop
                         }
@@ -353,7 +364,7 @@ public class AppointmentFrame extends JFrame
                 }
             }
         }
-        createButton.addActionListener(new Listener());                                 //add the new ActionListener to the JButton
+        createButton.addActionListener(new CreateButtonListener());                                 //add the new ActionListener to the JButton
         subActionPanelB.add(createButton);                                              //add the createbutton to the second action subpanel
     }
 
@@ -363,7 +374,7 @@ public class AppointmentFrame extends JFrame
     private void createCancelButton()
     {
         cancelButton = new JButton("Cancel");                                           //create a new JButton with label Cancel
-        class Listener implements ActionListener                                        //create a subclass that implements the ActionListener interface
+        class CancelButtonListener implements ActionListener                                        //create a subclass that implements the ActionListener interface
         {
             public void actionPerformed(ActionEvent evt)                                //override the actionPerformed method
             {
@@ -394,7 +405,7 @@ public class AppointmentFrame extends JFrame
                 }
             }
         }
-        cancelButton.addActionListener(new Listener());                                 //add the ActionListener to the cancelButton
+        cancelButton.addActionListener(new CancelButtonListener());                                 //add the ActionListener to the cancelButton
         subActionPanelB.add(cancelButton);                                              //add the cancelButton to the second action subpanel
     }
     
@@ -412,5 +423,87 @@ public class AppointmentFrame extends JFrame
         description = new JTextArea(4, 10);                                             //create a new JTextArea with 4 rows and 10 columns
         descriptionPanel.add(description, BorderLayout.CENTER);                         //add the description JTextArea to the center of the descriptionPanel
         controlPanel.add(descriptionPanel, BorderLayout.SOUTH);                         //add the descriptionPanel to the south of the controlPanel
+    }
+    
+    private void createMenuBar()
+    {
+        menuBar = new JMenuBar();
+        manageMenu = new JMenu("Manage");
+        menuBar.add(manageMenu);
+        
+        createClearAppointments();
+        createAddSamples();
+        
+        setJMenuBar(menuBar);
+    }
+    
+    private void createClearAppointments()
+    {
+        clearAppointments = new JMenuItem("Clear Appointments");
+        class ClearAppointmentsListener implements ActionListener
+        {
+            public void actionPerformed(ActionEvent e)
+            {
+                System.out.println(e);
+                
+            }
+        }
+        clearAppointments.addActionListener(new ClearAppointmentsListener());
+        manageMenu.add(clearAppointments);
+    }
+    
+    private void createAddSamples()
+    {
+        addSampleAppointments = new JMenuItem("Add Sample Appointments");
+        class AddSampleListener implements ActionListener
+        {
+            private Appointment[] samples = {
+                new Appointment(2017, 12, 12, 12, 12, "It will be 12:12 on 12/12"),
+                new Appointment(2011, 11, 11, 11, 11, "It was 11:11 on 11/11/11"),
+                new Appointment(1983, 4, 13, 3, 23, "This was a random date"),
+                new Appointment(2117, 3, 20, 11, 59, "100 years after this assignment is due"),
+                new Appointment(2006, 7, 3, 1, 12, "It is late"),
+                new Appointment(2017, 12, 12, 12, 13, "This also happens")
+            };
+            
+            public void actionPerformed(ActionEvent e)
+            {
+                //System.out.println(e);
+                //System.out.println(Arrays.toString(samples));
+                for(int j = 0; j < samples.length; j++)
+                {
+                    boolean create = true;                                                  //boolean to store wheather the appointment should be made or not
+                    int year = samples[j].getDate().get(Calendar.YEAR);                                     //easy access to the year,
+                    int month = samples[j].getDate().get(Calendar.MONTH);                                   //month,
+                    int day = samples[j].getDate().get(Calendar.DAY_OF_MONTH);                              //and day
+                    
+                    int hour = samples[j].getDate().get(Calendar.HOUR);                                      //get the hour from the hourInput JTextField
+                    int minute = samples[j].getDate().get(Calendar.MINUTE);                                  //get the minute from the minuteInput JTextField
+
+                    for(int i = 0; i < appointments.size(); i++)                        //for every index in appointments
+                    {
+                        if(appointments.get(i).occursOn(year, month, day, hour, minute))    //check if the appointment occurs at the given time
+                        {
+                            create = false;                                             //set the create variable to false
+                            description.setText("CONFLICT");                            //set the text of the description box to say CONFLICT
+                            break;                                                      //break the loop
+                        }
+                    }
+                    
+                    if(create)                                                          //if create was not set to false
+                    {
+                        //Appointment newAppointment = new Appointment(year, month, day, hour, minute, samples[j].getDescription());    //make a new appointment at the given time
+                        //description.setText("");                                        //clear the description text box
+                        appointments.add(samples[j]);                               //add the new appointment to the ArrayList
+                    }
+                    //System.out.println(appointments);
+                    //System.out.println(appointments.get(0).getDescription());
+                }
+                getTodaysAppointments();                                            //run the getTodaysAppointments method to print them to the screen
+
+            }
+        }
+        addSampleAppointments.addActionListener(new AddSampleListener());
+        manageMenu.add(addSampleAppointments);
     }
 }
