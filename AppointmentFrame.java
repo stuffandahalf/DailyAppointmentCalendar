@@ -26,6 +26,7 @@ import javax.swing.border.TitledBorder;
 import javax.swing.JMenuBar;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 
 
 
@@ -327,7 +328,7 @@ public class AppointmentFrame extends JFrame
             {
                 boolean create = true;                                                  //boolean to store wheather the appointment should be made or not
                 int year = date.get(Calendar.YEAR);                                     //easy access to the year,
-                int month = date.get(Calendar.MONTH);                                   //month,
+                int month = date.get(Calendar.MONTH)+1;                                   //month,
                 int day = date.get(Calendar.DAY_OF_MONTH);                              //and day
                 
                 String hour = hourInput.getText();                                      //get the hour from the hourInput JTextField
@@ -378,7 +379,7 @@ public class AppointmentFrame extends JFrame
             public void actionPerformed(ActionEvent evt)                                //override the actionPerformed method
             {
                 int year = date.get(Calendar.YEAR);                                     //store the current year,
-                int month = date.get(Calendar.MONTH);                                   //month,
+                int month = date.get(Calendar.MONTH)+1;                                   //month,
                 int day = date.get(Calendar.DAY_OF_MONTH);                              //and day
                 String hour = hourInput.getText();                                      //get the hour from the hourInput textField
                 String minute = minuteInput.getText();                                  //get the minute from the minnuteInput textField
@@ -479,6 +480,7 @@ public class AppointmentFrame extends JFrame
             
             public void actionPerformed(ActionEvent e)
             {
+                String message = "Appointments were added to the following time\n";
                 for(int j = 0; j < samples.length; j++)                                     //for every sample appointment
                 {
                     boolean create = true;                                                  //boolean to store wheather the appointment should be made or not
@@ -487,7 +489,8 @@ public class AppointmentFrame extends JFrame
                     int day = samples[j].getDate().get(Calendar.DAY_OF_MONTH);              //day,
                     int hour = samples[j].getDate().get(Calendar.HOUR);                     //hour,
                     int minute = samples[j].getDate().get(Calendar.MINUTE);                 //and minute
-
+                    SimpleDateFormat sampleFormat = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");
+                    
                     for(int i = 0; i < appointments.size(); i++)                            //for every index in appointments
                     {
                         if(appointments.get(i).occursOn(year, month, day, hour, minute))    //check if the appointment occurs at the given time
@@ -501,8 +504,11 @@ public class AppointmentFrame extends JFrame
                     if(create)                                                              //if create was not set to false
                     {
                         appointments.add(samples[j]);                                       //add the new appointment to the ArrayList
+                        message += sampleFormat.format(samples[j].getDate().getTime());
+                        message += "\n";
                     }
                 }
+                JOptionPane.showMessageDialog(null, message);
                 getTodaysAppointments();                                                    //run the getTodaysAppointments method to print them to the screen
 
             }

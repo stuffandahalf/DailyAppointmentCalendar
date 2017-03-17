@@ -95,7 +95,7 @@ public class Appointment implements Comparable<Appointment>                     
      */
     public boolean occursOn(int year, int month, int day, int hour, int minute)
     {
-        Calendar otherDate = new GregorianCalendar(year, month, day, hour, minute);     //make another GregorianCalendar object
+        Calendar otherDate = new GregorianCalendar(year, month-1, day, hour, minute);     //make another GregorianCalendar object
         return date.compareTo(otherDate) == 0;                                          //return if the two dates are the same
     }
     
